@@ -1,12 +1,12 @@
 import { Like } from "typeorm"
 import { AppDataSource } from "../db"
 import { Set } from "../entities/Set"
+import axios from "axios"
+
+const repo = AppDataSource.getRepository(Set)
 
 export class SetService {
     static async getSets(name: string, offset: number){
-      
-        const repo = AppDataSource.getRepository(Set)
-        
         const [sets, total] = await repo.findAndCount({
             where: name ? {
                 set_name: Like(`%${name}%`)
@@ -19,5 +19,20 @@ export class SetService {
         })
 
         return {sets, total}
+    }
+
+    static async getSetDetails(set_code: string){
+        const data = await repo.findOne({
+            where: {
+                set_code: set_code
+            }
+        })
+
+        const rsp = await axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=${data?.set_name}`)
+        
+        return {
+            set_details: data,
+            cards: rsp.data.data
+        }
     }
 }

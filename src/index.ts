@@ -18,6 +18,12 @@ app.get('/api/sets', async (req, res) => {
     res.json(await SetService.getSets(name, skip))
 })
 
+app.get('/api/set/:set_code', async (req, res) => {
+    const set_code = String(req.params.set_code)
+
+    res.json(await SetService.getSetDetails(set_code))
+})
+
 AppDataSource.initialize().then(() => {
     console.log("Connected to database")
     app.listen(3300, () => {
