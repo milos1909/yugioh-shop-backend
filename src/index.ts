@@ -1,47 +1,21 @@
 import express from "express"
 import cors from "cors"
 import morgan from "morgan"
-import { DataSource, Like } from "typeorm"
-import { Set } from "./entities/Set"
-import { report } from "process"
+import { AppDataSource } from "./db"
+import { SetService } from "./services/set.service"
 
 const app = express()
+
 app.use(cors())
 app.use(morgan("combined"))
 
-const AppDataSource = new DataSource({
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: '',
-    database: 'yugioh_shop',
-    entities: [Set]
-})
-
 app.use(express.static('public'))
 
-app.get('/sets', async (req, res) => {
-    const skip = Number(req.query.offset) || 0
+app.get('/api/sets', async (req, res) => {
     const name = String(req.query.name)
+    const skip = Number(req.query.offset) || 0
 
-    const repo = AppDataSource.getRepository(Set)
-
-    const [sets, total] = await repo.findAndCount({
-        where: name ? {
-            set_name: Like(`%${name}%`)
-        } : {},
-        order: {
-            tcg_date: 'DESC'
-        },
-        take: 18,
-        skip
-    })
-
-    res.json({
-        sets,
-        total
-    })
+    res.json(await SetService.getSets(name, skip))
 })
 
 AppDataSource.initialize().then(() => {
