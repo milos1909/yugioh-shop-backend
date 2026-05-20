@@ -28,7 +28,11 @@ export class SetService {
             }
         })
 
-        const rsp = await axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=${data?.set_name}`)
+        const rsp = await axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php`, {
+            params: {
+                cardset: data?.set_name
+            }
+        })
         
         return {
             set_details: data,
