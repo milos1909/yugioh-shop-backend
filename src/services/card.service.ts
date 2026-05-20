@@ -1,4 +1,5 @@
 import axios from "axios";
+import { AppDataSource } from "../db";
 
 const client = axios.create({
     baseURL: 'https://db.ygoprodeck.com/api/v7/cardinfo.php',
@@ -12,5 +13,14 @@ const client = axios.create({
 })
 
 export class CardService {
-
+    static async getCardDetails(id: number){
+        const rsp = await axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php`, {
+            params: {
+                id: id
+            }
+        })
+        
+        return rsp.data
+        
+    }
 }

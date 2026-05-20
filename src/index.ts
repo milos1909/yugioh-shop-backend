@@ -3,6 +3,7 @@ import cors from "cors"
 import morgan from "morgan"
 import { AppDataSource } from "./db"
 import { SetService } from "./services/set.service"
+import { CardService } from "./services/card.service"
 
 const app = express()
 
@@ -22,6 +23,12 @@ app.get('/api/set/:set_code', async (req, res) => {
     const set_code = String(req.params.set_code)
 
     res.json(await SetService.getSetDetails(set_code))
+})
+
+app.get('/api/card/:id', async (req, res) => {
+    const id = Number(req.params.id)
+
+    res.json(await CardService.getCardDetails(id))
 })
 
 AppDataSource.initialize().then(() => {
