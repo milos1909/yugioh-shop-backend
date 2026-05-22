@@ -4,6 +4,7 @@ import morgan from "morgan"
 import { AppDataSource } from "./db"
 import { SetService } from "./services/set.service"
 import { CardService } from "./services/card.service"
+import { defineRequest } from "./utils"
 
 const app = express()
 
@@ -20,9 +21,11 @@ app.get('/api/sets', async (req, res) => {
 })
 
 app.get('/api/set/:set_code', async (req, res) => {
-    const set_code = String(req.params.set_code)
-
-    res.json(await SetService.getSetDetails(set_code))
+    await defineRequest(res, async () => {
+        const set_code = String(req.params.set_code)
+        res.json(await SetService.getSetDetails(set_code))
+    })
+   
 })
 
 app.get('/api/card/:id', async (req, res) => {

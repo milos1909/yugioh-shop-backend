@@ -2,7 +2,7 @@ import axios from "axios";
 import { AppDataSource } from "../db";
 
 const client = axios.create({
-    baseURL: 'https://db.ygoprodeck.com/api/v7/cardinfo.php',
+    baseURL: 'https://db.ygoprodeck.com/api/v7',
     headers: {
         'Accept': 'application/json',
         'X-Name': 'YUGIOH_SHOP'
@@ -13,14 +13,19 @@ const client = axios.create({
 })
 
 export class CardService {
+    static async getCardsBySet(set_name: string) {
+        return await client.get(`/cardinfo.php`, {
+            params: {
+                cardset: set_name
+            }
+        })
+    }
+
     static async getCardDetails(id: number){
-        const rsp = await axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php`, {
+        return await client.get(`/cardinfo.php`, {
             params: {
                 id: id
             }
         })
-        
-        return rsp.data
-        
     }
 }

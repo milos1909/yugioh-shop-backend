@@ -1,7 +1,7 @@
 import { Like } from "typeorm"
 import { AppDataSource } from "../db"
 import { Set } from "../entities/Set"
-import axios from "axios"
+import { CardService } from "./card.service"
 
 const repo = AppDataSource.getRepository(Set)
 
@@ -28,11 +28,11 @@ export class SetService {
             }
         })
 
-        const rsp = await axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php`, {
-            params: {
-                cardset: data?.set_name
-            }
-        })
+        if(data == null){
+            throw new Error('NOT_FOUND')
+        }
+
+        const rsp = await CardService.getCardsBySet(String(data?.set_name))
         
         return {
             set_details: data,
