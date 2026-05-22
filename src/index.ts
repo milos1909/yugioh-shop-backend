@@ -2,9 +2,8 @@ import express from "express"
 import cors from "cors"
 import morgan from "morgan"
 import { AppDataSource } from "./db"
-import { SetService } from "./services/set.service"
-import { CardService } from "./services/card.service"
-import { defineRequest } from "./utils"
+import { SetRoute } from "./routes/set.route"
+import { CardRoute } from "./routes/card.route"
 
 const app = express()
 
@@ -13,26 +12,8 @@ app.use(morgan("combined"))
 
 app.use(express.static('public'))
 
-app.get('/api/sets', async (req, res) => {
-    const name = String(req.query.name)
-    const skip = Number(req.query.offset) || 0
-
-    res.json(await SetService.getSets(name, skip))
-})
-
-app.get('/api/set/:set_code', async (req, res) => {
-    await defineRequest(res, async () => {
-        const set_code = String(req.params.set_code)
-        res.json(await SetService.getSetDetails(set_code))
-    })
-   
-})
-
-app.get('/api/card/:id', async (req, res) => {
-    const id = Number(req.params.id)
-
-    res.json(await CardService.getCardDetails(id))
-})
+app.use('/api/set', SetRoute)
+app.use('/api/card', CardRoute)
 
 AppDataSource.initialize().then(() => {
     console.log("Connected to database")

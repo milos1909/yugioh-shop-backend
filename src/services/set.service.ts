@@ -36,7 +36,7 @@ export class SetService {
         
         return {
             set_details: data,
-            cards: rsp.data.data
+            cards: rsp.data
         }
     }
 }
