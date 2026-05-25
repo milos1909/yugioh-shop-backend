@@ -14,7 +14,12 @@ export async function defineRequest(res: Response, callback: Function) {
         const code = e.message == 'NOT_FOUND' ? 404 : 500
         res.status(code).json({
             message: e.message ?? 'SERVER_ERROR',
-            timestamp: new Date()
+            timestamp: new Date()   
         })
     }
+}
+
+export function generateVerificationCode() {
+    const number = Math.floor(Math.random() * 1000000)
+    return Number(String(number).padStart(6, '0'))
 }

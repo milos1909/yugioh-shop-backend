@@ -5,7 +5,7 @@ const db = await mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "yu-gi-oh"
+  database: "yugioh_shop"
 }) ;
 
 const response = await axios.get(
@@ -17,21 +17,18 @@ const cardSets = response.data;
 for (const set of cardSets) {
   await db.execute(
     `
-    INSERT INTO card_set
-      (set_name, set_code, num_of_cards, tcg_date, set_image)
+    INSERT INTO \`set\`
+      (set_code, set_name, num_of_cards, tcg_date, set_image)
     VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
-      set_name = VALUES(set_name),
       num_of_cards = VALUES(num_of_cards),
-      tcg_date = VALUES(tcg_date),
-      set_image = VALUES(set_image)
+      tcg_date = VALUES(tcg_date)
     `,
     [
-      set.set_name,
       set.set_code,
+      set.set_name,
       set.num_of_cards,
-      set.tcg_date || null,
-      set.set_image || null
+      set.tcg_date || null
     ]
   );
 }

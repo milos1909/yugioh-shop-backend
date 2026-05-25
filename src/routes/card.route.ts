@@ -7,6 +7,6 @@ export const CardRoute = Router()
 CardRoute.get('/:id', async (req, res) => {
     await defineRequest(res, async () => {
         const id = Number(req.params.id)
-        res.json(await CardService.getCardDetails(id))   
+        return await CardService.getCardDetails(id)
     })
 })
