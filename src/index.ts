@@ -6,6 +6,7 @@ import { SetRoute } from "./routes/set.route"
 import { CardRoute } from "./routes/card.route"
 import { configDotenv } from "dotenv"
 import { UserRouter } from "./routes/user.route"
+import { UserService } from "./services/user.service"
 
 const app = express()
 
@@ -15,6 +16,7 @@ app.use(morgan("combined"))
 
 app.use(express.static('public'))
 
+app.use(UserService.validateToken)
 app.use('/api/set', SetRoute)
 app.use('/api/card', CardRoute)
 app.use('/api/user', UserRouter)

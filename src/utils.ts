@@ -16,6 +16,8 @@ export async function defineRequest(res: Response, callback: Function) {
             message: e.message ?? 'SERVER_ERROR',
             timestamp: new Date()   
         })
+
+        console.log(e)
     }
 }
 
