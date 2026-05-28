@@ -2,28 +2,28 @@ import { Router } from "express";
 import { defineRequest } from "../utils";
 import { UserService } from "../services/user.service";
 
-export const UserRouter = Router()
+export const UserRoute = Router()
 
-UserRouter.post('/signup', async (req, res) => {
+UserRoute.post('/signup', async (req, res) => {
     await defineRequest(res, async () => {
         return await UserService.createAccount(req.body)
     })
 })
 
-UserRouter.put('/verify/:code', async (req, res) => {
+UserRoute.put('/verify/:code', async (req, res) => {
     await defineRequest(res, async () => {
         const code = Number(req.params.code)
         return await UserService.verifyAccount(code)
     })
 })
 
-UserRouter.post('/login', async (req, res) => {
+UserRoute.post('/login', async (req, res) => {
     await defineRequest(res, async () => {
         return await UserService.login(req.body)
     })  
 })
 
-UserRouter.post('/refresh', async (req, res) => {
+UserRoute.post('/refresh', async (req, res) => {
     await defineRequest(res, async () => {
         const auth = req.headers['authorization']
         const token = auth && auth.split(' ')[1]

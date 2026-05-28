@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { InvoiceItem } from "./InvoiceItem";
 
 @Entity("set", { schema: "yugioh_shop" })
 export class Set {
@@ -16,4 +17,10 @@ export class Set {
 
   @Column("date", { name: "tcg_date", nullable: true })
   tcg_date: string | null;
+
+  @Column("decimal", { name: "price", precision: 10, scale: 2, default: 0.0,})
+  set_price: string;
+
+  @OneToMany(() => InvoiceItem, (invoiceItem) => invoiceItem.set)
+  invoiceItems: InvoiceItem[];
 }

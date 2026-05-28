@@ -21,10 +21,10 @@ export class SetService {
         return {sets, total}
     }
 
-    static async getSetDetails(set_code: string){
+    static async getSetByName(set_name: string){
         const data = await repo.findOne({
             where: {
-                set_code: set_code
+                set_name
             }
         })
 
@@ -32,7 +32,7 @@ export class SetService {
             throw new Error('NOT_FOUND')
         }
 
-        const rsp = await CardService.getCardsBySet(String(data?.set_name))
+        const rsp = await CardService.getCardsBySet(String(set_name))
         
         return {
             set_details: data,

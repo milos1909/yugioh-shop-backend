@@ -10,3 +10,4 @@ CardRoute.get('/:id', async (req, res) => {
         return await CardService.getCardDetails(id)
     })
 })
+

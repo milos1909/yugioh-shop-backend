@@ -1,4 +1,11 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Invoice } from "./Invoice";
 
 @Index("uq_user_email", ["email"], { unique: true })
 @Index("uq_user_username", ["username"], { unique: true })
@@ -13,13 +20,16 @@ export class User {
   @Column("varchar", { name: "email", unique: true, length: 255 })
   email: string;
 
-  @Column("varchar", { name: "email_code", nullable: true })
+  @Column("int", { name: "email_code", nullable: true })
   emailCode: number | null;
 
   @Column("varchar", { name: "password", length: 255 })
   password: string;
 
-  @Column("datetime", { name: "created_at", default: () => "CURRENT_TIMESTAMP" })
+  @Column("datetime", {
+    name: "created_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt: Date;
 
   @Column("datetime", { name: "verified_at", nullable: true })
@@ -27,4 +37,7 @@ export class User {
 
   @Column("datetime", { name: "deleted_at", nullable: true })
   deletedAt: Date | null;
+
+  @OneToMany(() => Invoice, (invoice) => invoice.user)
+  invoices: Invoice[];
 }

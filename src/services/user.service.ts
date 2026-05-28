@@ -109,7 +109,7 @@ export class UserService {
         })
     }
 
-    private static async getUserByUsername(username: string){
+    static async getUserByUsername(username: string){
         const user = await repo.findOneBy({
             username,
             verifiedAt: Not(IsNull()),
