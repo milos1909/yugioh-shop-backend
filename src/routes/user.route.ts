@@ -4,6 +4,13 @@ import { UserService } from "../services/user.service";
 
 export const UserRoute = Router()
 
+UserRoute.get('/profile', async (req: any, res) => {
+    await defineRequest(res, async () => {
+        const username = req.user.username
+        return await UserService.getUserProfile(username)
+    })
+})
+
 UserRoute.post('/signup', async (req, res) => {
     await defineRequest(res, async () => {
         return await UserService.createAccount(req.body)
@@ -32,4 +39,11 @@ UserRoute.post('/refresh', async (req, res) => {
 
         return await UserService.refreshToken(token)
     })  
+})
+
+UserRoute.put('/password', async (req: any, res) => {
+    await defineRequest(res, async () => {
+        const username = req.user.username
+        return await UserService.updateUserPassword(req.body, username)
+    })
 })

@@ -12,6 +12,21 @@ const client = axios.create({
 })
 
 export class CardService {
+    static async getCards(name: string, offset: number){
+            const rsp = await client.get(`/cardinfo.php`, {
+                params: {
+                    fname: name,
+                    num: 24,
+                    offset
+                }
+            })
+
+            return {
+                cards: rsp.data.data, 
+                meta: rsp.data.meta
+            }
+        }
+
     static async getCardsBySet(set_name: string) {
         const rsp = await client.get(`/cardinfo.php`, {
             params: {

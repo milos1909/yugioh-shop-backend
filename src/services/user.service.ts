@@ -52,7 +52,7 @@ export class UserService {
         if(!bcrypt.compareSync(obj.password, user.password)) throw new Error('USER_NOT_FOUND')
 
         return {
-            access: jwt.sign({username: user.username}, JWT_SECRET, { expiresIn:  '15s' }),
+            access: jwt.sign({username: user.username}, JWT_SECRET, { expiresIn:  '60s' }),
             refresh: jwt.sign({username: user.username}, JWT_SECRET, { expiresIn:  '7d' }),
             username: user.username
         }
@@ -63,7 +63,7 @@ export class UserService {
         const user = await this.getUserByUsername(decoded.username)
 
         return {
-            access: jwt.sign({username: user.username}, JWT_SECRET, {expiresIn: '15s'}),
+            access: jwt.sign({username: user.username}, JWT_SECRET, {expiresIn: '60s'}),
             refresh: token,
             username: user.username
         }
@@ -119,5 +119,51 @@ export class UserService {
         if(user == null) throw new Error('USER_NOT_FOUND')
 
         return user
+    }
+
+    static async getUserProfile(username: string) {
+        const user = await repo.findOneOrFail({
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                invoices: {
+                    id: true,
+                    pursId: true,
+                    pursTime: true,
+                    invoiceItems: {
+                        id: true,
+                        pricePerItem: true,
+                        count: true
+                    }
+                }
+            },
+            where: {
+                username,
+                deletedAt: IsNull()
+            },
+            relations: {
+                invoices: {
+                    invoiceItems: true
+                }
+            }
+        })
+
+        user.invoices = user.invoices?.filter(invoice => invoice.pursId != null) ?? []
+
+    return user
+}
+
+    static async updateUserPassword(payload: any, username: string) {
+        const user = await this.getUserByUsername(username)
+
+        if (payload.currentPassword == '' || payload.newPassword == '')
+            throw new Error('PASSWORD_MUST_NOT_BE_EMPTY')
+
+        if (!bcrypt.compareSync(payload.oldPassword, user.password))
+            throw new Error('BAD_PASSWORD')
+
+        user.password = bcrypt.hashSync(payload.newPassword, 12)
+        await repo.save(user)
     }
 }

@@ -116,17 +116,22 @@ export class InvoiceService {
         const unpaidInvoice = await this.getUnpaidInvoice(username)
 
         const invoiceItems = await invoiceItemRepo.find({
-            select: {
-                id: true,
-            },
             where: {
-                id: unpaidInvoice.id,
+                invoiceId: unpaidInvoice.id,
                 deletedAt: IsNull()
+            },
+            relations: {
+                set: true
             }
         })
 
         if (invoiceItems.length == 0){
             throw new Error ('CART_IS_EMPTY')
+        }
+
+        for (let item of invoiceItems) {
+            item.pricePerItem = Number(item.set.set_price)
+            await invoiceItemRepo.save(item)
         }
 
         unpaidInvoice.pursId = uuidv7()
@@ -150,5 +155,43 @@ export class InvoiceService {
                 userId: user.id
             }
         })
+    }
+
+    static async getInvoiceDetails(invoiceId: number, username: string) {
+        const data = await invoiceRepo.findOne({
+            select: {
+                id: true,
+                pursId: true,
+                pursTime: true,
+                pursCounter: true,
+                createdAt: true,
+                invoiceItems: {
+                    id: true,
+                    pricePerItem: true,
+                    count: true,
+                    set: true
+                }
+            },
+            where: {
+                invoiceItems: {
+                    invoiceId,
+                    deletedAt: IsNull(),
+                },
+                user: {
+                    deletedAt: IsNull(),
+                    username
+                }
+            },
+            relations: {
+                invoiceItems: {
+                    set: true
+                }
+            }
+        })
+
+        if (data == null)
+            throw new Error('NOT_FOUND')
+
+        return data
     }
 }
