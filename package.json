@@ -4,7 +4,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --watch ./src/index.ts"
+    "dev": "bun --watch ./src/index.ts",
+    "import:cards": "bun scripts/import-cards.ts",
+    "import:sets": "bun scripts/import-sets.ts",
+    "download:images:cards": "bun scripts/download-card-images.ts",
+    "download:images:sets": "bun scripts/download-set-images.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

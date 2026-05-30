@@ -31,6 +31,5 @@ AppDataSource.initialize().then(() => {
     console.log("Connected to database")
     app.listen(port, () => {
         console.log(`App started on port ${port}`)
-
     })
 })
